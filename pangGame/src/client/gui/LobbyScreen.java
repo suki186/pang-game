@@ -10,13 +10,14 @@ public class LobbyScreen extends JFrame {
     public LobbyScreen() {
         // 기본 프레임 설정
         setTitle("로비 화면");
-        setSize(800, 500);
+        setSize(732, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getContentPane().setLayout(null); // null 레이아웃 사용
 
         // 왼쪽 TextArea (채팅 영역)
         JTextArea chatArea = new JTextArea();
         chatArea.setEditable(false);
+        chatArea.setFocusable(false);
         chatArea.setBounds(26, 45, 273, 345); // 위치(x, y)와 크기(width, height)
         JScrollPane chatScrollPane = new JScrollPane(chatArea);
         chatScrollPane.setBounds(26, 45, 273, 345); // TextArea에 스크롤 추가
@@ -24,7 +25,7 @@ public class LobbyScreen extends JFrame {
 
         // 채팅 입력 필드 (텍스트 필드)
         JTextField chatField = new JTextField();
-        chatField.setBounds(26, 400, 217, 30); // 채팅 입력 필드 크기 설정
+        chatField.setBounds(26, 400, 217, 25); // 채팅 입력 필드 크기 설정
         getContentPane().add(chatField);
 
         // 보내기 버튼
@@ -34,18 +35,19 @@ public class LobbyScreen extends JFrame {
         	public void actionPerformed(ActionEvent e) {
         	}
         });
-        sendButton.setBounds(249, 400, 50, 30); // 버튼 위치와 크기 설정
+        sendButton.setBounds(249, 400, 50, 25); // 버튼 위치와 크기 설정
         getContentPane().add(sendButton);
 
         // 오른쪽 TextArea (닉네임 목록)
         JTextArea clientListArea = new JTextArea();
         clientListArea.setEditable(false);
-        clientListArea.setBounds(554, 274, 211, 77); // 위치(x, y)와 크기
+        clientListArea.setFocusable(false);
+        clientListArea.setBounds(484, 274, 211, 77); // 위치(x, y)와 크기
         getContentPane().add(clientListArea);
 
         // 게임 시작 버튼
         JButton startGameButton = new JButton("게임 시작");
-        startGameButton.setBounds(554, 373, 211, 57); // 버튼 위치와 크기 설정
+        startGameButton.setBounds(484, 373, 211, 57); // 버튼 위치와 크기 설정
         getContentPane().add(startGameButton);
 
         // 기본 배경 색 설정 (예: 핑크색)

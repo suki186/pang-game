@@ -127,10 +127,10 @@ public class ChatLobby extends JFrame {
         String[] parts = msg.split(" ", 2);
         if (parts.length > 1) {
             String[] users = parts[1].split(",");
-            clientListArea.setText(""); // 기존 목록 초기화
+            clientListArea.setText("                      [참여자 목록]\n"); // 기존 목록 초기화
             for (String user : users) {
                 if (!user.trim().isEmpty()) {
-                    clientListArea.append(user + "\n");
+                    clientListArea.append("     - " + user + "\n");
                 }
             }
         }

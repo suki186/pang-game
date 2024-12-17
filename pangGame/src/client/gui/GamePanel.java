@@ -1,6 +1,7 @@
 package client.gui;
 import client.object.Character;
 import client.object.Bullet;
+import client.object.Ball;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,6 +12,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
     private Timer timer; // 타이머
     private Character character; // 캐릭터
     private ArrayList<Bullet> bullets; // 발사된 총알들
+    private ArrayList<Ball> balls;
     
     private boolean[] keyStates = new boolean[256];
 
@@ -33,6 +35,13 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 
         character = new Character(300, 400); // 초기 캐릭터 위치
         bullets = new ArrayList<>();
+        balls = new ArrayList<>();
+        
+        // 초기 공 생성 (가장 큰 공 4개)
+        balls.add(new Ball(100, 0, 50, 3, 2, 732, 500));
+        balls.add(new Ball(200, 0, 50, -2, 3, 732, 500));
+        balls.add(new Ball(400, 0, 50, 3, 2, 732, 500));
+        balls.add(new Ball(500, 0, 50, -2, 3, 732, 500));
 
         timer = new Timer(10, this); // 10ms 간격으로 화면 갱신
         timer.start();
@@ -50,11 +59,16 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         for (Bullet bullet : bullets) {
             bullet.draw(g);
         }
+        
+        // 공 그리기
+        for (Ball ball : balls) {
+            ball.draw(g);
+        }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // 이동 처리
+        // 캐릭터 이동 처리
         if (keyStates[KeyEvent.VK_LEFT]) { // 왼쪽 방향키
             character.moveLeft();
         }
@@ -62,7 +76,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
             character.moveRight();
         }
 
-        // 총알 움직임 갱신
+        // 총알 이동 처리
         for (int i = 0; i < bullets.size(); i++) {
             Bullet bullet = bullets.get(i);
             bullet.move();
@@ -70,6 +84,11 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
                 bullets.remove(i); // 화면 위로 벗어난 총알 제거
                 i--;
             }
+        }
+        
+        // 공 이동 처리
+        for (Ball ball : balls) {
+            ball.move(); // 각 Ball 움직이기
         }
 
         repaint(); // 화면 갱신

@@ -1,7 +1,9 @@
 package client.gui;
+
 import client.object.Character;
 import client.object.Bullet;
 import client.object.Ball;
+import client.object.CountDown;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,9 +11,10 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 public class GamePanel extends JPanel implements KeyListener, ActionListener {
-    private Timer timer; // 타이머
+    private Timer timer; // 프레임 속도
     private Character character; // 캐릭터
     private ArrayList<Bullet> bullets; // 발사된 총알들
+    private CountDown countDown; // 남은 시간
     private ArrayList<Ball> balls;
     
     private boolean[] keyStates = new boolean[256];
@@ -45,6 +48,8 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 
         timer = new Timer(10, this); // 10ms 간격으로 화면 갱신
         timer.start();
+        
+        countDown = new CountDown(); // 타이머 시작
     }
 
     @Override
@@ -64,10 +69,15 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         for (Ball ball : balls) {
             ball.draw(g);
         }
+        
+        // 남은시간 그리기
+        countDown.draw(g, getWidth(), getHeight());
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+    	countDown.update(10); // 타이머 업데이트
+    	
         // 캐릭터 이동 처리
         if (keyStates[KeyEvent.VK_LEFT]) { // 왼쪽 방향키
             character.moveLeft();

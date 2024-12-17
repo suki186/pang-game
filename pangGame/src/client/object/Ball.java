@@ -74,8 +74,8 @@ public class Ball {
     }
     
     public Ball[] split() {
-        if (level >= 4) return null; // 레벨 4 공은 더 이상 쪼개지지 않음
-        int newRadius = radius - 10; // 공의 크기 절반으로 줄임
+        if (level >= 4) return null; // 레벨4 공은 더 이상 쪼개지지 않음
+        int newRadius = radius - 12; // 공의 크기 줄임
         return new Ball[] {
             new Ball(x, y, newRadius, dx, -Math.abs(dy), level + 1, panelWidth, panelHeight),
             new Ball(x, y, newRadius, -dx, -Math.abs(dy), level + 1, panelWidth, panelHeight)

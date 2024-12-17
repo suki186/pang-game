@@ -13,19 +13,21 @@ public class Ball {
     private int radius; // 반지름
     private double dx, dy; // 속도
     private int panelWidth, panelHeight; // 패널 크기
+    private int level; // 공 레벨 (1: 가장 큼, 4: 가장 작음)
     private BufferedImage ballImage; // 공 이미지
 
-    public Ball(int startX, int startY, int radius, double dx, double dy, int panelWidth, int panelHeight) {
+    public Ball(int startX, int startY, int radius, double dx, double dy, int level, int panelWidth, int panelHeight) {
         this.x = startX;
         this.y = startY;
         this.radius = radius;
-        this.dx = dx * 1.2; // 초기 속도 가속
-        this.dy = dy * 1.2; // 초기 속도 가속
+        this.dx = dx * 1.0; // 초기 속도 가속
+        this.dy = dy * 1.0; // 초기 속도 가속
+        this.level = level;
         this.panelWidth = panelWidth;
         this.panelHeight = panelHeight;
 
         try {
-            ballImage = ImageIO.read(new File("resources/images/ball1.png"));
+            ballImage = ImageIO.read(new File("resources/images/ball" + level + ".png"));
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Ball Image Error");
@@ -51,8 +53,8 @@ public class Ball {
         if (y - radius < 0) {
             y = radius;
             dy = -dy; // 반대 방향으로 튕기기
-        } else if (y + radius > panelHeight) {
-            y = panelHeight - radius;
+        } else if (y + radius > panelHeight -30) {
+            y = panelHeight - radius-30;
             dy = -dy;
         }
     }
@@ -65,6 +67,25 @@ public class Ball {
             g.fillOval(x - radius, y - radius, radius * 2, radius * 2);
         }
     }
+    
+    // 총알과 공 충돌 감지
+    public boolean isHit(int bulletX, int bulletY) {
+        return Math.hypot(bulletX - x, bulletY - y) <= radius;
+    }
+    
+    public Ball[] split() {
+        if (level >= 4) return null; // 레벨 4 공은 더 이상 쪼개지지 않음
+        int newRadius = radius - 10; // 공의 크기 절반으로 줄임
+        return new Ball[] {
+            new Ball(x, y, newRadius, dx, -Math.abs(dy), level + 1, panelWidth, panelHeight),
+            new Ball(x, y, newRadius, -dx, -Math.abs(dy), level + 1, panelWidth, panelHeight)
+        };
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
 
     public void setPanelSize(int width, int height) {
         this.panelWidth = width;

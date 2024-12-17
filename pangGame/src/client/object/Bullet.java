@@ -35,6 +35,10 @@ public class Bullet {
     public void move() {
         y -= speed; // 위로 이동
     }
+    
+    public int getX() {
+        return x;
+    }
 
     public int getY() {
         return y;

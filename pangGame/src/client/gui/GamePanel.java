@@ -38,10 +38,10 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         balls = new ArrayList<>();
         
         // 초기 공 생성 (가장 큰 공 4개)
-        balls.add(new Ball(100, 0, 50, 3, 2, 732, 500));
-        balls.add(new Ball(200, 0, 50, -2, 3, 732, 500));
-        balls.add(new Ball(400, 0, 50, 3, 2, 732, 500));
-        balls.add(new Ball(500, 0, 50, -2, 3, 732, 500));
+        balls.add(new Ball(100, 0, 50, 3, 2, 1, 732, 500));
+        balls.add(new Ball(200, 0, 50, -2, 3, 1, 732, 500));
+        balls.add(new Ball(400, 0, 50, 3, 2, 1, 732, 500));
+        balls.add(new Ball(500, 0, 50, -2, 3, 1, 732, 500));
 
         timer = new Timer(10, this); // 10ms 간격으로 화면 갱신
         timer.start();
@@ -76,13 +76,31 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
             character.moveRight();
         }
 
-        // 총알 이동 처리
+        // 총알 이동 처리, 공 충돌 검사
         for (int i = 0; i < bullets.size(); i++) {
             Bullet bullet = bullets.get(i);
             bullet.move();
+
             if (bullet.getY() < 0) {
-                bullets.remove(i); // 화면 위로 벗어난 총알 제거
+                bullets.remove(i); // 화면 밖으로 나간 총알 제거
                 i--;
+                continue;
+            }
+
+            // 공과의 충돌 검사
+            for (int j = 0; j < balls.size(); j++) {
+                Ball ball = balls.get(j);
+                if (ball.isHit(bullet.getX(), bullet.getY())) {
+                    bullets.remove(i); // 충돌한 총알 제거
+                    balls.remove(j);   // 충돌한 공 제거
+                    i--;
+                    Ball[] newBalls = ball.split(); // 공을 쪼갬
+                    if (newBalls != null) {
+                        balls.add(newBalls[0]);
+                        balls.add(newBalls[1]);
+                    }
+                    break;
+                }
             }
         }
         

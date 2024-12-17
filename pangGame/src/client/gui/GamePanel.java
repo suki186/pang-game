@@ -3,7 +3,8 @@ package client.gui;
 import client.object.Character;
 import client.object.Bullet;
 import client.object.Ball;
-import client.object.CountDown;
+import client.util.CountDown;
+import client.util.Score;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +16,8 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
     private Character character; // 캐릭터
     private ArrayList<Bullet> bullets; // 발사된 총알들
     private CountDown countDown; // 남은 시간
-    private ArrayList<Ball> balls;
+    private ArrayList<Ball> balls; // 공들
+    private Score score; // 점수
     
     private boolean[] keyStates = new boolean[256];
 
@@ -50,6 +52,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         timer.start();
         
         countDown = new CountDown(); // 타이머 시작
+        score = new Score();
     }
 
     @Override
@@ -72,6 +75,9 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         
         // 남은시간 그리기
         countDown.draw(g, getWidth(), getHeight());
+        
+        // 점수 그리기
+        score.draw(g);
     }
 
     @Override
@@ -104,6 +110,15 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
                     bullets.remove(i); // 충돌한 총알 제거
                     balls.remove(j);   // 충돌한 공 제거
                     i--;
+                    
+                    // 공 맞추면 점수 추가
+                    switch (ball.getLevel()) {
+                    case 1: score.addPoints(5); break;
+                    case 2: score.addPoints(10); break;
+                    case 3: score.addPoints(20); break;
+                    case 4: score.addPoints(50); break;
+                    }
+
                     Ball[] newBalls = ball.split(); // 공을 쪼갬
                     if (newBalls != null) {
                         balls.add(newBalls[0]);
@@ -117,6 +132,12 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         // 공 이동 처리
         for (Ball ball : balls) {
             ball.move(); // 각 Ball 움직이기
+        }
+        
+        // 모든 공 없애면 타이머 멈추기
+        if (balls.isEmpty()) {
+            countDown.stop();
+            //timer.stop(); // 게임 멈추기
         }
 
         repaint(); // 화면 갱신

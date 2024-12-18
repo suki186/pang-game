@@ -14,7 +14,7 @@ public class GameOver extends JFrame {
     private String nickname2 = "Player2";
     private int score1;
     private int score2 = 1800;
-    private int coin1 = 1800;
+    private int coin1;
     private int coin2 = 1800;
 
     public GameOver(String result) {
@@ -22,7 +22,8 @@ public class GameOver extends JFrame {
     	
     	nickname1 = User.getNickname();
     	score1 = Score.getScore();
-
+    	
+    	coin1 = result.equals("SUCCESS") ? score1 : score1 / 2;
     	
         setTitle("Game Over");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -46,12 +47,17 @@ public class GameOver extends JFrame {
             setBackground(new Color(240, 200, 200)); // 배경색 (핑크)
             setLayout(null);
             
-            // GAME OVER 표시
+            // GAME OVER 라벨
             JLabel gameoverLabel = new JLabel("GAME OVER", SwingConstants.CENTER);
             gameoverLabel.setFont(new Font("D2coding", Font.BOLD, 30));
             gameoverLabel.setBounds(150, 20, 200, 30);
             add(gameoverLabel);
 
+            // 결과 메시지 표시
+            JLabel resultLabel = new JLabel(result.equals("SUCCESS") ? "🎉" : "💀", SwingConstants.CENTER);
+            resultLabel.setFont(new Font("Segoe UI Emoji", Font.BOLD, 24));
+            resultLabel.setBounds(150, 80, 200, 30);
+            add(resultLabel);
 
             // Player 1 정보
             addPlayerInfo(nickname1, score1, coin1, 100, 80);

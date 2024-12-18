@@ -164,16 +164,16 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
             if (item.isExpired()) { // 바닥에서 일정시간 경과하면 사라짐
                 items.remove(i);
                 i--;
+            } // 아이템 효과 처리
+            else if (item.isCaught(character.getX(), character.getY())) {
+                switch (item.getType()) {
+                    case "clock": countDown.addTime(10); break; // 시간 추가
+                    case "coin": score.addPoints(10); break; // 점수 추가
+                    case "speed": character.increaseSpeed(3); break; // 속도 증가
+                }
+                items.remove(i);
+                i--;
             }
-//            else if (item.isCaught(character.getX(), character.getY(), character.getWidth(), character.getHeight())) {
-//                switch (item.getType()) {
-//                    case "clock": countDown.addTime(5000); break; // 시간 추가
-//                    case "coin": score.addPoints(10); break; // 점수 추가
-//                    case "speed": character.increaseSpeed(); break; // 속도 증가
-//                }
-//                items.remove(i);
-//                i--;
-//            }
         }
         
         // 공 이동 처리

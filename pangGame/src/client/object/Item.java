@@ -48,17 +48,17 @@ public class Item {
         return onGround && remainingTime <= 0;
     }
 
-//    public boolean isCaught(int characterX, int characterY, int characterWidth, int characterHeight) {
-//        // 충돌 감지
-//        return x < characterX + characterWidth &&
-//               x + 32 > characterX &&
-//               y < characterY + characterHeight &&
-//               y + 32 > characterY;
-//    }
+    public boolean isCaught(int characterX, int characterY) {
+        // 충돌 감지
+        return x < characterX + 50 &&
+               x + 32 > characterX &&
+               y < characterY + 60 &&
+               y + 32 > characterY;
+    }
 
     public void draw(Graphics g) {
         if (itemImage != null) {
-            g.drawImage(itemImage, x, y, 32, 32, null);
+            g.drawImage(itemImage, x, y, 26, 26, null);
         }
     }
 

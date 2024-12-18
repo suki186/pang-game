@@ -23,6 +23,10 @@ public class CountDown {
             }
         }
     }
+    
+    public void addTime(int time) {
+    	remainingTime += time;
+    }
 
     public void stop() {
         isRunning = false;

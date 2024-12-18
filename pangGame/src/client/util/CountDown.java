@@ -8,7 +8,7 @@ public class CountDown {
     private int elapsedTime;   // 경과 시간 누적 (ms)
 
     public CountDown() {
-        this.remainingTime = 5;
+        this.remainingTime = 50;
         this.isRunning = true;
         this.elapsedTime = 0;
     }

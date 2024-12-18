@@ -3,6 +3,7 @@ package client.gui;
 import client.object.Character;
 import client.object.Bullet;
 import client.object.Ball;
+import client.object.Item;
 import client.util.CountDown;
 import client.util.Score;
 
@@ -10,6 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class GamePanel extends JPanel implements KeyListener, ActionListener {
     private Timer timer; // 프레임 속도
@@ -18,6 +20,8 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
     private CountDown countDown; // 남은 시간
     private ArrayList<Ball> balls; // 공들
     private Score score; // 점수
+    private ArrayList<Item> items; // 아이템들
+    private Random random; // 랜덤 객체
     
     private boolean[] keyStates = new boolean[256];
 
@@ -41,6 +45,8 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         character = new Character(300, 400); // 초기 캐릭터 위치
         bullets = new ArrayList<>();
         balls = new ArrayList<>();
+        items = new ArrayList<>();
+        random = new Random();
         
         // 초기 공 생성 (가장 큰 공 4개)
         balls.add(new Ball(100, 0, 50, 3, 2, 1, 732, 500));
@@ -73,6 +79,11 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
             ball.draw(g);
         }
         
+        // 아이템 그리기
+        for (Item item : items) {
+            item.draw(g);
+        }
+        
         // 남은시간 그리기
         countDown.draw(g, getWidth(), getHeight());
         
@@ -98,6 +109,14 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         }
         if (keyStates[KeyEvent.VK_RIGHT]) { // 오른쪽 방향키
             character.moveRight();
+        }
+        
+        // 랜덤 아이템 생성
+        if (random.nextInt(1000) < 3) { // 0.3% 확률
+            String[] itemTypes = {"clock", "coin", "speed"};
+            String type = itemTypes[random.nextInt(itemTypes.length)];
+            int randomX = random.nextInt(getWidth() - 32);
+            items.add(new Item(randomX, getHeight(), type));
         }
 
         // 총알 이동 처리, 공 충돌 검사
@@ -135,6 +154,26 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
                     break;
                 }
             }
+        }
+        
+        // 아이템 이동 처리, 캐릭터에 적용
+        for (int i = 0; i < items.size(); i++) {
+            Item item = items.get(i);
+            item.move();
+
+            if (item.isExpired()) { // 바닥에서 일정시간 경과하면 사라짐
+                items.remove(i);
+                i--;
+            }
+//            else if (item.isCaught(character.getX(), character.getY(), character.getWidth(), character.getHeight())) {
+//                switch (item.getType()) {
+//                    case "clock": countDown.addTime(5000); break; // 시간 추가
+//                    case "coin": score.addPoints(10); break; // 점수 추가
+//                    case "speed": character.increaseSpeed(); break; // 속도 증가
+//                }
+//                items.remove(i);
+//                i--;
+//            }
         }
         
         // 공 이동 처리

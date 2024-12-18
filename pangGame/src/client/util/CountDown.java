@@ -8,7 +8,7 @@ public class CountDown {
     private int elapsedTime;   // 경과 시간 누적 (ms)
 
     public CountDown() {
-        this.remainingTime = 100;
+        this.remainingTime = 5;
         this.isRunning = true;
         this.elapsedTime = 0;
     }
@@ -31,6 +31,11 @@ public class CountDown {
     public int getRemainingTime() {
         return remainingTime;
     }
+    
+    public boolean isFinished() {
+        return remainingTime <= 0; // 남은 시간이 0 이하일 때 true
+    }
+
     public void draw(Graphics g, int panelWidth, int panelHeight) {
         g.setColor(Color.BLACK);
         g.setFont(new Font("DOSIyagiBoldface", Font.BOLD, 30));

@@ -3,7 +3,7 @@ package client.util;
 import java.awt.*;
 
 public class Score {
-    private int score;
+    private static int score;
 
     public Score() {
         this.score = 0;
@@ -13,7 +13,7 @@ public class Score {
         score += points;
     }
 
-    public int getScore() {
+    public static int getScore() {
         return score;
     }
 

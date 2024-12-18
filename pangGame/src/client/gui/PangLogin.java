@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
+import client.util.User;
+
 public class PangLogin extends JFrame {
 	
 	private static final String IP_ADDRESS = "127.0.0.1";
@@ -66,6 +68,7 @@ public class PangLogin extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String username = nicknameField.getText().trim();
+			User.setNickname(username); // User에 닉네임 저장
 			ChatLobby view = new ChatLobby(username, IP_ADDRESS, PORT_NUM); // Lobby로 이동
 			setVisible(false);
 		}

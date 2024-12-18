@@ -44,9 +44,9 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         
         // 초기 공 생성 (가장 큰 공 4개)
         balls.add(new Ball(100, 0, 50, 3, 2, 1, 732, 500));
-        balls.add(new Ball(200, 0, 50, -2, 3, 1, 732, 500));
-        balls.add(new Ball(400, 0, 50, 3, 2, 1, 732, 500));
-        balls.add(new Ball(500, 0, 50, -2, 3, 1, 732, 500));
+//        balls.add(new Ball(200, 0, 50, -2, 3, 1, 732, 500));
+//        balls.add(new Ball(400, 0, 50, 3, 2, 1, 732, 500));
+//        balls.add(new Ball(500, 0, 50, -2, 3, 1, 732, 500));
 
         timer = new Timer(10, this); // 10ms 간격으로 화면 갱신
         timer.start();
@@ -83,6 +83,14 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
     	countDown.update(10); // 타이머 업데이트
+    	
+    	// 남은 시간 종료
+    	// GameOver 창 띄우기 (실패)
+        if (countDown.isFinished()) {
+            timer.stop(); // 게임 멈추기
+            SwingUtilities.invokeLater(() -> new GameOver("FAIL"));
+            return;
+        }
     	
         // 캐릭터 이동 처리
         if (keyStates[KeyEvent.VK_LEFT]) { // 왼쪽 방향키
@@ -137,7 +145,10 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         // 모든 공 없애면 타이머 멈추기
         if (balls.isEmpty()) {
             countDown.stop();
-            //timer.stop(); // 게임 멈추기
+            timer.stop(); // 게임 멈추기
+            
+            // GameOver 창 띄우기 (성공)
+            SwingUtilities.invokeLater(() -> new GameOver("SUCCESS"));
         }
 
         repaint(); // 화면 갱신

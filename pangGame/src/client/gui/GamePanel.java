@@ -110,6 +110,9 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         if (keyStates[KeyEvent.VK_RIGHT]) { // 오른쪽 방향키
             character.moveRight();
         }
+        if (!keyStates[KeyEvent.VK_LEFT] && !keyStates[KeyEvent.VK_RIGHT]) {
+            character.stop();
+        }
         
         // 랜덤 아이템 생성
         if (random.nextInt(1000) < 3) { // 0.3% 확률

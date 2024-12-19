@@ -56,6 +56,14 @@ public class Ball {
             dy = -dy;
         }
     }
+    
+    public int getX() {
+    	return x;
+    }
+    
+    public int getY() {
+    	return y;
+    }
 
     public void draw(Graphics g) {
         if (ballImage != null) {

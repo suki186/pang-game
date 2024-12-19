@@ -43,6 +43,14 @@ public class Item {
             remainingTime -= 10; // 유지 시간 감소
         }
     }
+    
+    public int getX() {
+    	return x;
+    }
+    
+    public int getY() {
+    	return y;
+    }
 
     public boolean isExpired() { // 바닥에 있고 유지 시간이 초과된 경우
         return onGround && remainingTime <= 0;

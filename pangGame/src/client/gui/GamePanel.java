@@ -10,6 +10,8 @@ import client.util.Score;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -24,9 +26,22 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
     private Random random; // 랜덤 객체
     
     private boolean[] keyStates = new boolean[256];
+    
+    private Socket socket;
+    private DataInputStream dis;
+    private DataOutputStream dos;
 
-    public GamePanel() {
+    public GamePanel(Socket socket) {
         setFocusable(true);
+        
+        this.socket = socket;
+        try {
+            dis = new DataInputStream(socket.getInputStream());
+            dos = new DataOutputStream(socket.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -59,6 +74,24 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         
         countDown = new CountDown(); // 타이머 시작
         score = new Score();
+        
+        new ServerListener().start();
+    }
+    
+    private void sendCharacterState() {
+        try {
+            dos.writeUTF(String.format("/character %d %d", character.getX(), character.getY()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendBulletState(Bullet bullet) {
+        try {
+            dos.writeUTF(String.format("/bullet %d %d", bullet.getX(), bullet.getY()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -194,6 +227,38 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         }
 
         repaint(); // 화면 갱신
+    }
+    
+    class ServerListener extends Thread {
+        @Override
+        public void run() {
+            try {
+                while (true) {
+                    String message = dis.readUTF();
+                    if (message.startsWith("/character")) {
+                        updateCharacter(message);
+                    } else if (message.startsWith("/bullet")) {
+                        updateBullet(message);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void updateCharacter(String message) {
+            String[] parts = message.split(" ");
+            int x = Integer.parseInt(parts[1]);
+            int y = Integer.parseInt(parts[2]);
+            character.setPosition(x, y);
+        }
+
+        private void updateBullet(String message) {
+            String[] parts = message.split(" ");
+            int x = Integer.parseInt(parts[1]);
+            int y = Integer.parseInt(parts[2]);
+            bullets.add(new Bullet(x, y));
+        }
     }
 
 	@Override

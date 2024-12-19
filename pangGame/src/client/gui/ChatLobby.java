@@ -12,6 +12,7 @@ public class ChatLobby extends JFrame {
 	private static final int BUF_LEN = 128;
 	
     private String UserName; // 닉네임
+    private boolean isHost = false; // 방장
     
     private JLabel lblUserName; // 닉네임 표시
     private JTextArea chatArea; // 채팅 화면
@@ -69,6 +70,7 @@ public class ChatLobby extends JFrame {
         // 게임 시작 버튼
         startGameButton = new JButton("START");
         startGameButton.setBounds(484, 373, 211, 57);
+        startGameButton.setEnabled(false); // 처음엔 비활성화
         add(startGameButton);
 		
 		
@@ -89,6 +91,16 @@ public class ChatLobby extends JFrame {
             sendButton.addActionListener(action); // 액션 리스너 설정
             chatField.addActionListener(action);
             chatField.requestFocus();
+            
+            // 게임시작버튼 액션 리스너
+            startGameButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (isHost) { // 방장이라면 서버에 시작프로토콜
+                        SendMessage("/startgame " + UserName);
+                    }
+                }
+            });
         } catch (NumberFormatException | IOException e) {
             e.printStackTrace();
             AppendText("connect error");
@@ -98,12 +110,22 @@ public class ChatLobby extends JFrame {
     // 서버의 메세지를 화면에 표시
     class ListenNetwork extends Thread {
         public void run() {
-            while (true) {
+        	while (true) {
                 try {
                     String msg = dis.readUTF();
-                    
+
                     if (msg.startsWith("/userlist")) {
                         UpdateClientList(msg);
+                    } else if (msg.startsWith("/host")) {
+                        String[] parts = msg.split(" ");
+                        if (parts.length > 1) {
+                            String hostName = parts[1];
+                            isHost = hostName.equals(UserName); // 방장 여부 확인
+                            startGameButton.setEnabled(isHost); // 방장만 버튼 활성화
+                        }
+                    } else if (msg.startsWith("/startgame")) {
+                    	System.out.println("Game is starting...");
+                        StartGameScreen();
                     } else {
                         AppendText(msg);
                     }
@@ -120,6 +142,13 @@ public class ChatLobby extends JFrame {
                 }
             }
         }
+    }
+    
+    public void StartGameScreen() {
+        SwingUtilities.invokeLater(() -> {
+            dispose(); // 현재화면 닫기
+            new GameScreen(UserName, socket); // GameScreen으로 전환
+        });
     }
     
     // 사용자 목록을 clientListArea에 업데이트

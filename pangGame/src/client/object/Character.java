@@ -56,6 +56,11 @@ public class Character {
     	return y;
     }
     
+    public void setPosition(int x, int y) {
+    	this.x = x;
+    	this.y = y;
+    }
+    
     // 속도 증가
     public void increaseSpeed(int increment) {
         speed += increment;
